@@ -6,6 +6,21 @@ from oauth2client.service_account import ServiceAccountCredentials
 import json
 import pandas as pd
 
+if "password_correct" not in st.session_state:
+    st.session_state["password_correct"] = False
+
+if not st.session_state["password_correct"]:
+    st.title("🔒 論文データベースへようこそ")
+    password = st.text_input("パスワードを入力してください", type="password")
+    if st.button("ログイン"):
+        # 入力されたパスワードと金庫のパスワードを照合
+        if password == st.secrets["APP_PASSWORD"]:
+            st.session_state["password_correct"] = True
+            st.rerun() # 画面をリロードしてアプリ本体を表示
+        else:
+            st.error("パスワードが違います。")
+    st.stop() # ログイン成功するまでは、絶対にここから下のコードを実行させない
+
 # --- 設定（クラウドのSecretsを使用） ---
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 SPREADSHEET_ID = "1m-v3jzwTXqKndPnqXWN4-jsx35ROBhW2XIOaZ_ckKFc" 
